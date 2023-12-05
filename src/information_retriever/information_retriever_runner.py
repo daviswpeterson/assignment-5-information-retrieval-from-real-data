@@ -23,7 +23,7 @@ def main() -> None:
     # build all the feature sets
     all_videos = []
     for video in data:
-        if not video.keys().contains("details"):  # This should filter out ads
+        if "details" not in video.keys():  # This should filter out ads
             all_videos.append(IrFeatureSet.ir_build(video, video["time"][:4]))
 
     random.shuffle(all_videos)  # shuffle them
@@ -31,27 +31,28 @@ def main() -> None:
     train_ir_feature_sets = all_videos[:38600]  # 80% for training (8k tweet feature sets)
     test_ir_feature_sets = all_videos[38600:]  # 20% for testing (2k tweet feature sets)
 
-    our_tweet_classifier = IrClassifier.train(train_ir_feature_sets)  # create our classifier
+    ir_classifier = IrClassifier.ir_train(train_ir_feature_sets)  # create our classifier
 
     i = 0
     while i < 10:  # change this to however many we want to see
         print("Actual class: " + test_ir_feature_sets[i].clas + " | Predicted class: "
-              + our_tweet_classifier.gamma(test_ir_feature_sets[i]))
+              + ir_classifier.ir_gamma(test_ir_feature_sets[i]))
         i += 1
 
-    print("\nAccuracy = " + str(accuracy(test_ir_feature_sets, 1000, our_tweet_classifier)) + "\n")
+    print("\nAccuracy = " + str(accuracy(test_ir_feature_sets, 1000, ir_classifier)) + "\n")
 
     # our_tweet_classifier.present_features(20)  # present top features used by classifier (change num based on how many)
 
 
-def accuracy(list_of_sets: list[FeatureSet], amount: int, classifier: AbstractClassifier) -> float:
+def accuracy(list_of_sets: list[IrFeatureSet], amount: int, classifier: IrClassifier) -> float:
     i = 0
     accuracyTally = 0
     while i < amount:  # change this to however many we want to see
-        if list_of_sets[i].clas in classifier.gamma(list_of_sets[i]):
+        if list_of_sets[i].clas in classifier.ir_gamma(list_of_sets[i]):
             accuracyTally += 1
         i += 1
     return accuracyTally / amount
+
 
 if __name__ == '__main__':
     main()

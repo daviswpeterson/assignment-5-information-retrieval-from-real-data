@@ -70,16 +70,20 @@ class IrFeatureSet(FeatureSet):
         }
 
         """
+
+        # print(str(source_object))
+
         return_set = set()
         title_set = set(source_object["title"].split())
         for word in title_set:
             return_set.add(IrFeature("Title contains " + word, True, "title"))
-        return_set.add(IrFeature("Channel is " + source_object["subtitle"][0]["name"], True, "channel"))
+        if source_object.get("subtitles", 0) != 0:
+            return_set.add(IrFeature("Channel is " + source_object["subtitles"][0]["name"], True, "channel"))
         return_set.add(IrFeature("Month is " + source_object["time"][6:7], True, "month"))
-        return_set.add(IrFeature("Time is after 3pm", int(type(source_object["time"][10:11])) >= 15, "time"))
+        # print("Hour: " + source_object["time"][12:13])
+        return_set.add(IrFeature("Time is after 3pm", int(source_object["time"][12:13]) >= 15, "time"))
 
         return IrFeatureSet(return_set, known_clas)
-
 
 
 class IrClassifier(ABC):
@@ -148,19 +152,19 @@ class IrClassifier(ABC):
         all_features = {}  # {"name": [0, 0, 0, 0, 0, 0, 0]}
 
         all_classes = {
-            2017: [0, 0],  # First value is IrFeatureSet.clas
-            2018: [1, 0],
-            2019: [2, 0],
-            2020: [3, 0],
-            2021: [4, 0],
-            2022: [5, 0],
-            2023: [6, 0]
+            "2017": [0, 0],  # First value is IrFeatureSet.clas
+            "2018": [1, 0],
+            "2019": [2, 0],
+            "2020": [3, 0],
+            "2021": [4, 0],
+            "2022": [5, 0],
+            "2023": [6, 0]
         }
 
         for feature_set in training_set:
             for feature in feature_set.feat:
 
-                if all_features.get(feature, 0) == 0:  # if this feature is already recorded in the dict -> +1 to correct class
+                if all_features.get(feature, 0) == 0:  # check if feature is in the dict
                     all_features[feature] = [0, 0, 0, 0, 0, 0, 0]  # adds this feature to the dict
 
                 all_features[feature][all_classes[feature_set.clas][0]] += 1
@@ -170,13 +174,16 @@ class IrClassifier(ABC):
 
         # divide each # of positive or negative tweets with a specific feature by the total number of positive or
         # negative tweets respectively
+
+        print(str(all_classes))
+
         for feature in all_features.keys():
-            all_features[feature][0] /= all_classes[2017][0]
-            all_features[feature][1] /= all_classes[2017][1]
-            all_features[feature][2] /= all_classes[2017][2]
-            all_features[feature][3] /= all_classes[2017][3]
-            all_features[feature][4] /= all_classes[2017][4]
-            all_features[feature][5] /= all_classes[2017][5]
-            all_features[feature][6] /= all_classes[2017][6]
+            all_features[feature][0] /= all_classes["2017"][1]
+            all_features[feature][1] /= all_classes["2018"][1]
+            all_features[feature][2] /= all_classes["2019"][1]
+            all_features[feature][3] /= all_classes["2020"][1]
+            all_features[feature][4] /= all_classes["2021"][1]
+            all_features[feature][5] /= all_classes["2022"][1]
+            all_features[feature][6] /= all_classes["2023"][1]
 
         return IrClassifier(all_features)
