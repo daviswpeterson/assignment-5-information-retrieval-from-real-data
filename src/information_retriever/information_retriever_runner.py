@@ -28,18 +28,19 @@ def main() -> None:
 
     random.shuffle(all_videos)  # shuffle them
 
-    train_ir_feature_sets = all_videos[:38600]  # 80% for training (8k tweet feature sets)
-    test_ir_feature_sets = all_videos[38600:]  # 20% for testing (2k tweet feature sets)
+    train_ir_feature_sets = all_videos[:30600]  # 80% for training (8k tweet feature sets)
+    test_ir_feature_sets = all_videos[30600:]  # 20% for testing (2k tweet feature sets)
 
     ir_classifier = IrClassifier.ir_train(train_ir_feature_sets)  # create our classifier
 
     i = 0
     while i < 10:  # change this to however many we want to see
+        print(str(test_ir_feature_sets[i].feat))
         print("Actual class: " + test_ir_feature_sets[i].clas + " | Predicted class: "
               + ir_classifier.ir_gamma(test_ir_feature_sets[i]))
         i += 1
 
-    print("\nAccuracy = " + str(accuracy(test_ir_feature_sets, 1000, ir_classifier)) + "\n")
+    print("\nAccuracy = " + str(accuracy(test_ir_feature_sets, 2000, ir_classifier)) + "\n")
 
     # our_tweet_classifier.present_features(20)  # present top features used by classifier (change num based on how many)
 

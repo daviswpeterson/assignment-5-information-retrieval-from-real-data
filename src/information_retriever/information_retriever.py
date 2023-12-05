@@ -86,7 +86,7 @@ class IrFeatureSet(FeatureSet):
         return IrFeatureSet(return_set, known_clas)
 
 
-class IrClassifier(ABC):
+class IrClassifier(AbstractClassifier):
     """Abstract definition for an object classifier."""
     def __init__(self, probability_dict: dict):
         # Will have a set of all the features for the twitter_samples and how they predict which class (probability)
@@ -96,7 +96,6 @@ class IrClassifier(ABC):
     def get_probability_dict(self) -> dict:
         return self.probability_dict
 
-    @abstractmethod
     def ir_gamma(self, a_feature_set: IrFeatureSet) -> str:
         """Given a single feature set representing an object to be classified, returns the most probable class
         for the object based on the training this classifier received (via a call to `train` class method).
@@ -128,7 +127,6 @@ class IrClassifier(ABC):
         mostLikelyYear = max(gammaDict, key=gammaDict.get)
         return mostLikelyYear + ", " + str(gammaDict[mostLikelyYear])
 
-    @abstractmethod
     def ir_present_features(self, top_n: int = 1) -> None:
         """Prints `top_n` feature(s) used by this classifier in the descending order of informativeness of the
         feature in determining a class for any object. Informativeness of a feature is a quantity that represents
@@ -139,7 +137,6 @@ class IrClassifier(ABC):
         pass
 
     @classmethod
-    @abstractmethod
     def ir_train(cls, training_set: Iterable[IrFeatureSet]) -> IrClassifier:
         """Method that builds a Classifier instance with its training (supervised learning) already completed. That is,
         the `AbstractClassifier` instance returned as the result of invoking this method must support `gamma` and
@@ -175,7 +172,7 @@ class IrClassifier(ABC):
         # divide each # of positive or negative tweets with a specific feature by the total number of positive or
         # negative tweets respectively
 
-        print(str(all_classes))
+        # print(str(all_classes))
 
         for feature in all_features.keys():
             all_features[feature][0] /= all_classes["2017"][1]

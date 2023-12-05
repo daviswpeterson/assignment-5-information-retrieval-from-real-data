@@ -102,7 +102,7 @@ class AbstractClassifier(ABC):
     """Abstract definition for an object classifier."""
 
     @abstractmethod
-    def gamma(self, a_feature_set: FeatureSet) -> str:
+    def ir_gamma(self, a_feature_set: FeatureSet) -> str:
         """Given a single feature set representing an object to be classified, returns the most probable class
         for the object based on the training this classifier received (via a call to `train` class method).
 
@@ -112,7 +112,7 @@ class AbstractClassifier(ABC):
         pass
 
     @abstractmethod
-    def present_features(self, top_n: int = 1) -> None:
+    def ir_present_features(self, top_n: int = 1) -> None:
         """Prints `top_n` feature(s) used by this classifier in the descending order of informativeness of the
         feature in determining a class for any object. Informativeness of a feature is a quantity that represents
         how "good" a feature is in determining the class for an object.
@@ -123,7 +123,7 @@ class AbstractClassifier(ABC):
 
     @classmethod
     @abstractmethod
-    def train(cls, training_set: Iterable[FeatureSet]) -> AbstractClassifier:
+    def ir_train(cls, training_set: Iterable[FeatureSet]) -> AbstractClassifier:
         """Method that builds a Classifier instance with its training (supervised learning) already completed. That is,
         the `AbstractClassifier` instance returned as the result of invoking this method must support `gamma` and
         `present_features` method calls immediately without needing any other method invocations prior to them.
