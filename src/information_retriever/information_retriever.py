@@ -88,10 +88,11 @@ class IrFeatureSet(FeatureSet):
 
 class IrClassifier(AbstractClassifier):
     """Abstract definition for an object classifier."""
-    def __init__(self, probability_dict: dict):
+    def __init__(self, probability_dict: dict, proportion_dict: dict):
         # Will have a set of all the features for the twitter_samples and how they predict which class (probability)
         # SO,this constructor should have a dictionary of features and their probability for + or - tweet
         self.probability_dict = probability_dict
+        self.proportion_dict = proportion_dict
 
     def get_probability_dict(self) -> dict:
         return self.probability_dict
@@ -104,15 +105,14 @@ class IrClassifier(AbstractClassifier):
         :return: name of the class with the highest probability for the object
         """
 
-        gammaDict = {
-            "2017": 1 / 2,
-            "2018": 1 / 2,
-            "2019": 1 / 2,
-            "2020": 1 / 2,
-            "2021": 1 / 2,
-            "2022": 1 / 2,
-            "2023": 1 / 2,
-        }
+        # print(str(self.proportion_dict))
+        gammaDict = self.proportion_dict.copy()
+        total = 0
+        for key in gammaDict.keys():
+            total += gammaDict[key]
+
+        for key in gammaDict.keys():
+            gammaDict[key] /= total
 
         for feature in a_feature_set.feat:
             if self.probability_dict.get(feature, 0) != 0:  # if the feature is in the dictionary
@@ -183,4 +183,11 @@ class IrClassifier(AbstractClassifier):
             all_features[feature][5] /= all_classes["2022"][1]
             all_features[feature][6] /= all_classes["2023"][1]
 
-        return IrClassifier(all_features)
+        proportion_dict = {}
+        for key in all_classes.keys():
+            # print(str(key))
+            # print(str(all_classes[key][1]))
+            proportion_dict[key] = all_classes[key][1]
+        # print(str(proportion_dict))
+
+        return IrClassifier(all_features, proportion_dict)

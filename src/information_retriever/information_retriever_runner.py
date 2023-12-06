@@ -16,33 +16,53 @@ __email__ = ["crogstad@westmont.edu", "davpeterson@westmont.edu"]
 
 def main() -> None:
 
-    # access json
-    with importlib.resources.open_text("data", "davis-watch-history.json") as file:
-        data = json.load(file)
+    exit_code = False
+    retrain = True
 
-    # build all the feature sets
-    all_videos = []
-    for video in data:
-        if "details" not in video.keys():  # This should filter out ads
-            all_videos.append(IrFeatureSet.ir_build(video, video["time"][:4]))
+    while not exit_code:
 
-    random.shuffle(all_videos)  # shuffle them
+        while retrain:
 
-    train_ir_feature_sets = all_videos[:30600]  # 80% for training (8k tweet feature sets)
-    test_ir_feature_sets = all_videos[30600:]  # 20% for testing (2k tweet feature sets)
+            print("\nTraining a new classifier...")
 
-    ir_classifier = IrClassifier.ir_train(train_ir_feature_sets)  # create our classifier
+            # access json
+            with importlib.resources.open_text("data", "davis-watch-history.json") as file:
+                data = json.load(file)
 
-    i = 0
-    while i < 10:  # change this to however many we want to see
-        print(str(test_ir_feature_sets[i].feat))
-        print("Actual class: " + test_ir_feature_sets[i].clas + " | Predicted class: "
-              + ir_classifier.ir_gamma(test_ir_feature_sets[i]))
-        i += 1
+            # build all the feature sets
+            all_videos = []
+            for video in data:
+                if "details" not in video.keys():  # This should filter out ads
+                    all_videos.append(IrFeatureSet.ir_build(video, video["time"][:4]))
 
-    print("\nAccuracy = " + str(accuracy(test_ir_feature_sets, 2000, ir_classifier)) + "\n")
+            random.shuffle(all_videos)  # shuffle them
 
-    # our_tweet_classifier.present_features(20)  # present top features used by classifier (change num based on how many)
+            train_ir_feature_sets = all_videos[:30600]  # 80% for training (8k tweet feature sets)
+            test_ir_feature_sets = all_videos[30600:]  # 20% for testing (2k tweet feature sets)
+
+            ir_classifier = IrClassifier.ir_train(train_ir_feature_sets)  # create our classifier
+
+            # i = 0
+            # while i < 10:  # change this to however many we want to see
+            #     # print(str(test_ir_feature_sets[i].feat))
+            #     print("Actual class: " + test_ir_feature_sets[i].clas + " | Predicted class: "
+            #           + ir_classifier.ir_gamma(test_ir_feature_sets[i]))
+            #     i += 1
+
+            print("\nThe accuracy of your current classifier is " + str(accuracy(test_ir_feature_sets, 2000, ir_classifier)))
+            yes_or_no = input("\nWould you like to train a new classifier instead? (y/n) ")
+
+            if yes_or_no == "n":
+                retrain = False
+
+        print("For the following feature prompts, simply press \"enter\" if you do not wish to test that feature type.")
+        titleStr = input("\nEnter a YouTube video title: ")
+        channelStr = input("\nEnter a YouTube channel name: ")
+        hourStr = input("\nEnter an hour of the day as a two digit number (i.e. 01, 17): ")
+        monthStr = input("\nEnter a month of the year as a two digit number (i.e. 01, 11: ")
+
+
+        # our_tweet_classifier.present_features(20)  # present top features used by classifier (change num based on how many)
 
 
 def accuracy(list_of_sets: list[IrFeatureSet], amount: int, classifier: IrClassifier) -> float:
