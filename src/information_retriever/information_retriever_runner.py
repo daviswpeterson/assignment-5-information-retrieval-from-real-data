@@ -55,11 +55,27 @@ def main() -> None:
             if yes_or_no == "n":
                 retrain = False
 
-        print("For the following feature prompts, simply press \"enter\" if you do not wish to test that feature type.")
+        print("\nFor the following feature prompts, simply press \"enter\" if you do not wish to test that feature type.")
         titleStr = input("\nEnter a YouTube video title: ")
         channelStr = input("\nEnter a YouTube channel name: ")
         hourStr = input("\nEnter an hour of the day as a two digit number (i.e. 01, 17): ")
-        monthStr = input("\nEnter a month of the year as a two digit number (i.e. 01, 11: ")
+        monthStr = input("\nEnter a month of the year as a two digit number (i.e. 01, 11): ")
+        yearStr = input("\nWhat year of Davis' life do you think this video might have come from?")
+
+        pseudoVideo = format_to_dict(titleStr, channelStr, hourStr, monthStr)
+        testVideoFeatureSet = IrFeatureSet.ir_build(pseudoVideo)
+        gammaStr = ir_classifier.ir_gamma(testVideoFeatureSet)
+
+        print("\nWe believe that the most likely year that this video would have been watched in Davis' life was " + gammaStr + " being our confidence (gamma) score.")
+        endInput = input("\nWould you like to \na) reuse the same classifier\nb) create a new one\nc) terminate the program\nEnter (a/b/c): ")
+        if endInput == "a":
+            exit_code = False
+            retrain = False
+        if endInput == "b":
+            exit_code = False
+            retrain = True
+        if endInput == "c":
+            exit_code = True
 
 
         # our_tweet_classifier.present_features(20)  # present top features used by classifier (change num based on how many)
@@ -73,6 +89,43 @@ def accuracy(list_of_sets: list[IrFeatureSet], amount: int, classifier: IrClassi
             accuracyTally += 1
         i += 1
     return accuracyTally / amount
+
+
+"""
+{
+        "header": "YouTube",
+        "title": "Watched Ranking Your CURSED Presentations",
+        "titleUrl": "https://www.youtube.com/watch?v\u003dcTSvBW3qC6g",
+        "subtitles": [{
+            "name": "jschlattLIVE",
+            "url": "https://www.youtube.com/channel/UC2mP7il3YV7TxM_3m6U0bwA"
+        }],
+        "time": "2023-08-07T05:27:57.394Z",
+        "products": ["YouTube"],
+        "activityControls": ["YouTube watch history"]
+}
+"""
+
+
+def format_to_dict(title: str, channel: str, hour: str, month: str) -> dict:
+    if len(month) != 2:
+        month = "00"
+    if len(hour) != 2:
+        hour = "00"
+
+    newDict = {
+        "header": "YouTube",
+        "title": title,
+        "titleUrl": None,
+        "subtitles": [{
+            "name": channel,
+            "url": None
+        }],
+        "time": "0000-" + month + "-00T" + hour + ":00:00.000Z",
+        "products": ["YouTube"],
+        "activityControls": ["YouTube watch history"]
+    }
+    return newDict
 
 
 if __name__ == '__main__':

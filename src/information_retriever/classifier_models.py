@@ -20,7 +20,7 @@ class Feature:
         _value (str): machine-readable value of the feature (e.g., True)
     """
 
-    def __init__(self, name, value=None, value_class=None):
+    def __init__(self, name, value=None):
         self._name: str = name
         self._value: Any = value
         self._value_class: Any = value

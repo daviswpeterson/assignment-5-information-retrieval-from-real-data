@@ -3,6 +3,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from classifier_models import *
+import math
 
 
 __author__ = "Mike Ryu"
@@ -20,8 +21,8 @@ class IrFeature(Feature):
         _value (str): machine-readable value of the feature (e.g., True)
     """
 
-    def __init__(self, name, value=None, value_class=None):
-        super().__init__(name, value, value)
+    def __init__(self, name, value=None):
+        super().__init__(name, value)
 
 
 class IrFeatureSet(FeatureSet):
@@ -74,14 +75,14 @@ class IrFeatureSet(FeatureSet):
         # print(str(source_object))
 
         return_set = set()
-        title_set = set(source_object["title"].split())
+        title_set = set(source_object["title"].lower().split())
         for word in title_set:
-            return_set.add(IrFeature("Title contains " + word, True, "title"))
+            return_set.add(IrFeature("Title contains " + word, True))
         if source_object.get("subtitles", 0) != 0:
-            return_set.add(IrFeature("Channel is " + source_object["subtitles"][0]["name"], True, "channel"))
-        return_set.add(IrFeature("Month is " + source_object["time"][6:7], True, "month"))
+            return_set.add(IrFeature("Channel is " + source_object["subtitles"][0]["name"], True))
+        return_set.add(IrFeature("Month is " + source_object["time"][6:7], True))
         # print("Hour: " + source_object["time"][12:13])
-        return_set.add(IrFeature("Time is after 3pm", int(source_object["time"][12:13]) >= 15, "time"))
+        return_set.add(IrFeature("Time is after 3pm", int(source_object["time"][12:13]) >= 15))
 
         return IrFeatureSet(return_set, known_clas)
 
