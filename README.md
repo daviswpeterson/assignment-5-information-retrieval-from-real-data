@@ -31,3 +31,19 @@ for the program to output a file presenting a lot of the statistics of the class
 
 This about all I got. I would've brought this to you in person, but I'm fairly busy this week. If you think this isn't 
 enough to be "enhanced" I'd love to add more to it because this would be a lot of fun to do! Thank!
+
+# Interesting Test Cases
+
+Test case 1: This video appears once in 2023, three times in 2021, and twice in 2020
+- Title: Watched This Video Has 68,832,477 Views
+- Channel: Tom Scott
+- Hour watched: None
+- Month: None
+- **Results:** 2021 was predicted correctly everytime
+
+Test case 2: This channel was watched predominately in 2017 and 2018, but not exclusively
+- Title: None
+- Channel: acdcVEVO
+- Hour watched: None
+- Month: None
+- **Results:** 2017 was correctly predicted everytime, but not 2018 every

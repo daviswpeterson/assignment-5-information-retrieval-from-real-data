@@ -37,8 +37,8 @@ def main() -> None:
 
             random.shuffle(all_videos)  # shuffle them
 
-            train_ir_feature_sets = all_videos[:30600]  # 80% for training (8k tweet feature sets)
-            test_ir_feature_sets = all_videos[30600:]  # 20% for testing (2k tweet feature sets)
+            train_ir_feature_sets = all_videos[:30600]  # 80% for training
+            test_ir_feature_sets = all_videos[30600:]  # 20% for testing
 
             ir_classifier = IrClassifier.ir_train(train_ir_feature_sets)  # create our classifier
 
@@ -60,14 +60,14 @@ def main() -> None:
         channelStr = input("\nEnter a YouTube channel name: ")
         hourStr = input("\nEnter an hour of the day as a two digit number (i.e. 01, 17): ")
         monthStr = input("\nEnter a month of the year as a two digit number (i.e. 01, 11): ")
-        yearStr = input("\nWhat year of Davis' life do you think this video might have come from?")
+        yearStr = input("\nWhat year of Davis' life do you think this video might have come from? ")
 
         pseudoVideo = format_to_dict(titleStr, channelStr, hourStr, monthStr)
         testVideoFeatureSet = IrFeatureSet.ir_build(pseudoVideo)
         gammaStr = ir_classifier.ir_gamma(testVideoFeatureSet)
 
         print("\nWe believe that the most likely year that this video would have been watched in Davis' life was " + gammaStr + " being our confidence (gamma) score.")
-        endInput = input("\nWould you like to \na) reuse the same classifier\nb) create a new one\nc) terminate the program\nEnter (a/b/c): ")
+        endInput = input("\nWould you like to \na) reuse the same classifier\nb) create a new one\nc) terminate the program\n\nEnter (a/b/c): ")
         if endInput == "a":
             exit_code = False
             retrain = False
@@ -76,10 +76,6 @@ def main() -> None:
             retrain = True
         if endInput == "c":
             exit_code = True
-
-
-        # our_tweet_classifier.present_features(20)  # present top features used by classifier (change num based on how many)
-
 
 def accuracy(list_of_sets: list[IrFeatureSet], amount: int, classifier: IrClassifier) -> float:
     i = 0

@@ -50,11 +50,6 @@ class IrFeatureSet(FeatureSet):
 
         :param source_object: object to build the feature set from
         :param known_clas: pre-defined classification of the source object
-        :param user_config: user inputted arguments that decide what type of features to focus on
-            -Title keywords
-            -Channel names
-            -Month
-            -Time
         :return: an instance of `FeatureSet` built based on the `source_object` passed in
 
         {
@@ -69,11 +64,7 @@ class IrFeatureSet(FeatureSet):
         "products": ["YouTube"],
         "activityControls": ["YouTube watch history"]
         }
-
         """
-
-        # print(str(source_object))
-
         return_set = set()
         title_set = set(source_object["title"].lower().split())
         for word in title_set:
@@ -81,7 +72,6 @@ class IrFeatureSet(FeatureSet):
         if source_object.get("subtitles", 0) != 0:
             return_set.add(IrFeature("Channel is " + source_object["subtitles"][0]["name"], True))
         return_set.add(IrFeature("Month is " + source_object["time"][6:7], True))
-        # print("Hour: " + source_object["time"][12:13])
         return_set.add(IrFeature("Time is after 3pm", int(source_object["time"][12:13]) >= 15))
 
         return IrFeatureSet(return_set, known_clas)
@@ -127,6 +117,51 @@ class IrClassifier(AbstractClassifier):
 
         mostLikelyYear = max(gammaDict, key=gammaDict.get)
         return mostLikelyYear + ", " + str(gammaDict[mostLikelyYear])
+
+    def order_features(self, top_n: int = 1) -> str:
+        present_dict = {}
+
+        for feature in present_dict:  # For each feature
+            valueDict = {
+                2017: self.probability_dict[feature][0],
+                2018: self.probability_dict[feature][1],
+                2019: self.probability_dict[feature][2],
+                2020: self.probability_dict[feature][3],
+                2021: self.probability_dict[feature][4],
+                2022: self.probability_dict[feature][5],
+                2023: self.probability_dict[feature][6]
+            }
+            maxKey = max(valueDict, key=valueDict.get)
+            maxValue = valueDict[maxKey]
+            valueDict.pop(maxKey)
+
+            for key in valueDict.keys():
+                if valueDict[key] != 0:
+                    maxValue /= valueDict[key]
+
+            present_dict[feature] = [str(maxKey), maxValue]
+
+        sortedList = sorted(present_dict.items(), key=lambda item: item[1][1], reverse=True)  # I get lambda now!
+        # print("SortedList: " + str(sortedList))
+        # sorted() will naturally output a list of this: (FeatureName,["direction", 0.0])
+        # the lambda should sort it by our "decimal" value
+
+        returnStr = "Most informative features:"
+        index = 0
+        while index < top_n:
+            space = " " * (3 - len(str(index + 1)))
+            featureNameStr = "\n" + str(index + 1) + "." + space + str(sortedList[index][0])
+            while len(featureNameStr) < 37:
+                featureNameStr += " "
+            returnStr += featureNameStr
+            returnStr += str(sortedList[index][1][0])
+            ratioStr = str(sortedList[index][1][1]) + " : 1"
+            while len(ratioStr) < 17:
+                ratioStr = " " + ratioStr
+            returnStr += ratioStr
+            index += 1
+
+        return returnStr
 
     def ir_present_features(self, top_n: int = 1) -> None:
         """Prints `top_n` feature(s) used by this classifier in the descending order of informativeness of the
