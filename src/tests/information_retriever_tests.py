@@ -3,7 +3,7 @@ from src.information_retriever.information_retriever import *
 
 
 class TestIrBuild(unittest.TestCase):
-    def SetUp(self):
+    def setUp(self):
         self.video1 = {
               "header": "YouTube",
               "title": "Watched Get a Grip: How Long Can a MythBuster Hold a Grenade?",
