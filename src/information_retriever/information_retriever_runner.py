@@ -49,13 +49,18 @@ def main() -> None:
             #           + ir_classifier.ir_gamma(test_ir_feature_sets[i]))
             #     i += 1
 
-            print("\nThe accuracy of your current classifier is " + str(accuracy(test_ir_feature_sets, 2000, ir_classifier)))
+            print("\nThe accuracy of your current classifier is " + str(accuracy(test_ir_feature_sets, 2000,
+                                                                                 ir_classifier)))
+
+            # ir_classifier.ir_present_features(5)
+
             yes_or_no = input("\nWould you like to train a new classifier instead? (y/n) ")
 
             if yes_or_no == "n":
                 retrain = False
 
-        print("\nFor the following feature prompts, simply press \"enter\" if you do not wish to test that feature type.")
+        print("\nFor the following feature prompts, simply press \"enter\" if you do not wish to test that feature"
+              " type.")
         titleStr = input("\nEnter a YouTube video title: ")
         channelStr = input("\nEnter a YouTube channel name: ")
         hourStr = input("\nEnter an hour of the day as a two digit number (i.e. 01, 17): ")
@@ -66,8 +71,10 @@ def main() -> None:
         testVideoFeatureSet = IrFeatureSet.ir_build(pseudoVideo)
         gammaStr = ir_classifier.ir_gamma(testVideoFeatureSet)
 
-        print("\nWe believe that the most likely year that this video would have been watched in Davis' life was " + gammaStr + " being our confidence (gamma) score.")
-        endInput = input("\nWould you like to \na) reuse the same classifier\nb) create a new one\nc) terminate the program\n\nEnter (a/b/c): ")
+        print("\nWe believe that the most likely year that this video would have been watched in Davis' life was "
+              + gammaStr + " being our confidence (gamma) score.")
+        endInput = input("\nWould you like to \na) reuse the same classifier\nb) create a new one\nc) terminate the"
+                         " program\n\nEnter (a/b/c): ")
         if endInput == "a":
             exit_code = False
             retrain = False
@@ -77,6 +84,7 @@ def main() -> None:
         if endInput == "c":
             exit_code = True
 
+
 def accuracy(list_of_sets: list[IrFeatureSet], amount: int, classifier: IrClassifier) -> float:
     i = 0
     accuracyTally = 0
@@ -85,22 +93,6 @@ def accuracy(list_of_sets: list[IrFeatureSet], amount: int, classifier: IrClassi
             accuracyTally += 1
         i += 1
     return accuracyTally / amount
-
-
-"""
-{
-        "header": "YouTube",
-        "title": "Watched Ranking Your CURSED Presentations",
-        "titleUrl": "https://www.youtube.com/watch?v\u003dcTSvBW3qC6g",
-        "subtitles": [{
-            "name": "jschlattLIVE",
-            "url": "https://www.youtube.com/channel/UC2mP7il3YV7TxM_3m6U0bwA"
-        }],
-        "time": "2023-08-07T05:27:57.394Z",
-        "products": ["YouTube"],
-        "activityControls": ["YouTube watch history"]
-}
-"""
 
 
 def format_to_dict(title: str, channel: str, hour: str, month: str) -> dict:
