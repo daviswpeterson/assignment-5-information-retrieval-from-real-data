@@ -18,27 +18,44 @@ def main() -> None:
 
     exit_code = False
     retrain = True
+    # access json
+    with importlib.resources.open_text("data", "davis-watch-history.json") as file:
+        data = json.load(file)
 
     while not exit_code:
 
         while retrain:
 
-            print("\nTraining a new classifier...")
-
-            # access json
-            with importlib.resources.open_text("data", "davis-watch-history.json") as file:
-                data = json.load(file)
-
             # build all the feature sets
             all_videos = []
+            featureDict = {
+                "2017": [],
+                "2018": [],
+                "2019": [],
+                "2020": [],
+                "2021": [],
+                "2022": [],
+                "2023": []
+            }
+
             for video in data:
                 if "details" not in video.keys():  # This should filter out ads
-                    all_videos.append(IrFeatureSet.ir_build(video, video["time"][:4]))
+                    # all_videos.append(IrFeatureSet.ir_build(video, video["time"][:4]))
+                    featureDict[video["time"][:4]].append(IrFeatureSet.ir_build(video, video["time"][:4]))
+
+            listOfYears = input("\nList each year you would like the classifier to be based on with a space between"
+                                " each one (2017 2018 2019 2020 2021 2022 2023): ")
+
+            for year in listOfYears.split():
+                all_videos.extend(featureDict[year])
+
+            print("\nTraining a new classifier...")
 
             random.shuffle(all_videos)  # shuffle them
 
-            train_ir_feature_sets = all_videos[:30600]  # 80% for training
-            test_ir_feature_sets = all_videos[30600:]  # 20% for testing
+            cutoff = (int(len(all_videos) * 0.8))
+            train_ir_feature_sets = all_videos[:cutoff]  # 80% for training
+            test_ir_feature_sets = all_videos[cutoff:]  # 20% for testing
 
             ir_classifier = IrClassifier.ir_train(train_ir_feature_sets)  # create our classifier
 
@@ -49,8 +66,8 @@ def main() -> None:
             #           + ir_classifier.ir_gamma(test_ir_feature_sets[i]))
             #     i += 1
 
-            print("\nThe accuracy of your current classifier is " + str(accuracy(test_ir_feature_sets, 2000,
-                                                                                 ir_classifier)))
+            print("\nThe accuracy of your current classifier is " + str(accuracy(test_ir_feature_sets,
+                                                                    len(test_ir_feature_sets) - 1, ir_classifier)))
 
             # ir_classifier.ir_present_features(5)
 

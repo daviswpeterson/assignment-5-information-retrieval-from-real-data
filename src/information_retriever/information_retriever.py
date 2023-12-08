@@ -217,13 +217,20 @@ class IrClassifier:
             all_classes[feature_set.clas][1] += 1
 
         for feature in all_features.keys():
-            all_features[feature][0] /= all_classes["2017"][1]
-            all_features[feature][1] /= all_classes["2018"][1]
-            all_features[feature][2] /= all_classes["2019"][1]
-            all_features[feature][3] /= all_classes["2020"][1]
-            all_features[feature][4] /= all_classes["2021"][1]
-            all_features[feature][5] /= all_classes["2022"][1]
-            all_features[feature][6] /= all_classes["2023"][1]
+            if all_classes["2017"][1] != 0:
+                all_features[feature][0] /= all_classes["2017"][1]
+            if all_classes["2018"][1] != 0:
+                all_features[feature][1] /= all_classes["2018"][1]
+            if all_classes["2019"][1] != 0:
+                all_features[feature][2] /= all_classes["2019"][1]
+            if all_classes["2020"][1] != 0:
+                all_features[feature][3] /= all_classes["2020"][1]
+            if all_classes["2021"][1] != 0:
+                all_features[feature][4] /= all_classes["2021"][1]
+            if all_classes["2022"][1] != 0:
+                all_features[feature][5] /= all_classes["2022"][1]
+            if all_classes["2023"][1] != 0:
+                all_features[feature][6] /= all_classes["2023"][1]
 
         proportion_dict = {}
         for key in all_classes.keys():

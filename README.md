@@ -36,12 +36,34 @@ input to streamline the classifying process and give them more freedom. The foll
 The build method is actually very similar to the one used in the previous assignment. The ony alteration is that instead
 of accepting a string argument, it now takes in a dictionary representation of a YouTube video from the JSON.
 
+**How to use:** All it requires is a dictionary with standard YouTube key-value pairs. This is what a YouTube video's
+dictionary description looks like:
+
+```
+{
+  "header": "YouTube",
+  "title": "Watched Hill Hill Hill Hill, debunked, debunked",
+  "titleUrl": "https://www.youtube.com/watch?v\u003dNUyXiiIGDTo",
+  "subtitles": [{
+    "name": "Tom Scott",
+    "url": "https://www.youtube.com/channel/UCBa659QWEk1AI4Tg--mrJ2A"
+  }],
+  "time": "2021-09-06T16:32:05.615Z",
+  "products": ["YouTube"],
+  "activityControls": ["YouTube watch history"]
+}
+```
+
+The only keys that are used and analyzed by this program are title, name, and time. These are parsed in build.
+
 ### train()
 
 I drastically changed train as compared to the previous assignment. Since the last classifier only had two classes, this
 allowed us (Connor and I) to make some inefficient design choices such as unnecessary if statements. I was able to cut
 down on this code via dictionaries, which I made ample use of in the project. So while there are five additional classes,
 the code is actually much simpler.
+
+**How to use:** 
 
 ### Classifier constructor
 
@@ -50,8 +72,20 @@ each class appeared in the training set. With the Tweet Classifier, both classes
 since each class (year of my life) have different amounts of YouTube videos watched, I'll have to account for that in
 gamma. This dictionary is computed in train and used in gamma.
 
+**How to use:** 
+
 ### gamma()
 
+While gamma is very similar to its original model, some extra data was needed to make precise calculations. Instead of
+assuming that the distributions of classes was equal, I brought in the exact amount of each class into gamma via a
+dictionary. 
 
+**How to use:** 
 
 ### runner
+
+Runner has been completely revamped. The original code has been completely altered via user input. This had the positive
+side effect of making testing of the accuracy much easier. I had to add a method to support turning user inputs into
+dictionaries.
+
+**How to use:** 
