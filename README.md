@@ -1,4 +1,4 @@
-# Assigngment 5: Information Retrieval from Real Data
+# Assignment 5: Information Retrieval from Real Data
 **Code Word:** 
 
 **Westmont College Fall 2023**
@@ -10,6 +10,15 @@
 ## Author Information
 * **Name**: Davis Peterson
 * **Email**: davpeterson@westmont.edu
+
+## Credits
+
+### People
+- Professor Mike Ryu: provided structure for code and tutelage to the creator of this tool
+- Connor Rogstad: collaborating on the creation of the previous version of this assignment which this was built off of
+
+### Sources
+- information_retriever.py, line 137; [stackoverflow](https://stackoverflow.com/questions/268272/getting-key-with-maximum-value-in-dictionary)
 
 ## My Corpus:
 
@@ -63,7 +72,8 @@ allowed us (Connor and I) to make some inefficient design choices such as unnece
 down on this code via dictionaries, which I made ample use of in the project. So while there are five additional classes,
 the code is actually much simpler.
 
-**How to use:** 
+**How to use:** This requires any type of iterable of IrFeatureSets. After assembling this, it can be inputted as an
+argument into the method, outputting a fully trained IrClassifier.
 
 ### Classifier constructor
 
@@ -72,20 +82,23 @@ each class appeared in the training set. With the Tweet Classifier, both classes
 since each class (year of my life) have different amounts of YouTube videos watched, I'll have to account for that in
 gamma. This dictionary is computed in train and used in gamma.
 
-**How to use:** 
+**How to use:** This is created through train. The gamma method uses this class.
 
 ### gamma()
 
 While gamma is very similar to its original model, some extra data was needed to make precise calculations. Instead of
 assuming that the distributions of classes was equal, I brought in the exact amount of each class into gamma via a
-dictionary. 
+dictionary in the class constructor.
 
-**How to use:** 
+**How to use:** By inputting an IrFeatureSet into gamma, it will output a string containing the predicted class and its
+calculated gamma value.
 
 ### runner
 
-Runner has been completely revamped. The original code has been completely altered via user input. This had the positive
-side effect of making testing of the accuracy much easier. I had to add a method to support turning user inputs into
-dictionaries.
+Runner has been completely revamped. The original code has been completely altered via user input. Here what it looks
+like now:
+- Allows users to choose the number of classes to train the classifier on
+- Allows users to choose what variety of features to classify on
+- Allows users to quickly retrain classifiers to pick the best one
 
-**How to use:** 
+**How to use:** Run the code and follow the prompts!

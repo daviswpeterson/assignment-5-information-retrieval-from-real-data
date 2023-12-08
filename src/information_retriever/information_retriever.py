@@ -84,11 +84,11 @@ class IrFeatureSet:
         return_set = set()
         title_set = set(source_object["title"].lower().split())
         for word in title_set:
-            return_set.add(IrFeature("Title contains " + word, True))
+            return_set.add(IrFeature("Title contains " + word, True))  # Title keywords
         if source_object.get("subtitles", 0) != 0:
-            return_set.add(IrFeature("Channel is " + source_object["subtitles"][0]["name"], True))
-        return_set.add(IrFeature("Month is " + source_object["time"][6:7], True))
-        return_set.add(IrFeature("Time is after 3pm", int(source_object["time"][12:13]) >= 15))
+            return_set.add(IrFeature("Channel is " + source_object["subtitles"][0]["name"], True))  # Channel name
+        return_set.add(IrFeature("Month is " + source_object["time"][6:7], True))  # Month
+        return_set.add(IrFeature("Time is after 3pm", int(source_object["time"][12:13]) >= 15))  # Hour
 
         return IrFeatureSet(return_set, known_clas)
 
@@ -96,8 +96,12 @@ class IrFeatureSet:
 class IrClassifier:
     """Definition for an object classifier."""
     def __init__(self, probability_dict: dict, proportion_dict: dict):
-        # Will have a set of all the features for the twitter_samples and how they predict which class (probability)
-        # SO,this constructor should have a dictionary of features and their probability for + or - tweet
+        """
+        A fully trained classifier which is able to predict based of a set of classes
+        :param probability_dict: a dictionary of every feature in the corpus with a probability for every class for each
+        feature.
+        :param proportion_dict: the amount of each class that appears in the training set
+        """
         self.probability_dict = probability_dict
         self.proportion_dict = proportion_dict
 
@@ -133,63 +137,9 @@ class IrClassifier:
         mostLikelyYear = max(gammaDict, key=gammaDict.get)
         return mostLikelyYear + ", " + str(gammaDict[mostLikelyYear])
 
-    def order_features(self, top_n: int = 1) -> str:
-        present_dict = {}
-
-        for feature in self.probability_dict:  # For each feature
-            valueDict = {
-                2017: self.probability_dict[feature][0],
-                2018: self.probability_dict[feature][1],
-                2019: self.probability_dict[feature][2],
-                2020: self.probability_dict[feature][3],
-                2021: self.probability_dict[feature][4],
-                2022: self.probability_dict[feature][5],
-                2023: self.probability_dict[feature][6]
-            }
-            maxKey = max(valueDict, key=valueDict.get)
-            maxValue = valueDict[maxKey]
-            valueDict.pop(maxKey)
-
-            for key in valueDict.keys():
-                if valueDict[key] != 0:
-                    maxValue /= valueDict[key]
-
-            present_dict[feature] = [str(maxKey), maxValue]
-
-        sortedList = sorted(present_dict.items(), key=lambda item: item[1][1], reverse=True)  # I get lambda now!
-        # print("SortedList: " + str(sortedList))
-        # sorted() will naturally output a list of this: (FeatureName,["direction", 0.0])
-        # the lambda should sort it by our "decimal" value
-
-        returnStr = "Most informative features:"
-        index = 0
-        while index < top_n:
-            space = " " * (3 - len(str(index + 1)))
-            featureNameStr = "\n" + str(index + 1) + "." + space + str(sortedList[index][0])
-            while len(featureNameStr) < 37:
-                featureNameStr += " "
-            returnStr += featureNameStr
-            returnStr += str(sortedList[index][1][0]) + "  gamma: "
-            ratioStr = str(sortedList[index][1][1]) + " : 1"
-            while len(ratioStr) < 17:
-                ratioStr = " " + ratioStr
-            returnStr += ratioStr
-            index += 1
-
-        return returnStr
-
-    def ir_present_features(self, top_n: int = 1) -> None:
-        """Prints `top_n` feature(s) used by this classifier in the descending order of informativeness of the
-        feature in determining a class for any object. Informativeness of a feature is a quantity that represents
-        how "good" a feature is in determining the class for an object.
-
-        :param top_n: how many of the top features to print; must be 1 or greater
-        """
-        print(self.order_features(top_n))
-
     @classmethod
     def ir_train(cls, training_set: Iterable[IrFeatureSet]) -> IrClassifier:
-        """Method that builds a Classifier instance with its training (supervised learning) already completed.
+        """Method that builds a classifier instance with its training (supervised learning) already completed.
 
         :param training_set: An iterable collection of `IrFeatureSet` to use for training the classifier
         :return: an instance of `IrClassifier` with its training already completed
@@ -210,14 +160,14 @@ class IrClassifier:
             for feature in feature_set.feat:
 
                 if all_features.get(feature, 0) == 0:  # check if feature is in the dict
-                    all_features[feature] = [0, 0, 0, 0, 0, 0, 0]  # adds this feature to the dict
+                    all_features[feature] = [0, 0, 0, 0, 0, 0, 0]  # adds this feature to the dict if not
 
-                all_features[feature][all_classes[feature_set.clas][0]] += 1
+                all_features[feature][all_classes[feature_set.clas][0]] += 1  # add a tally to feature probability
 
-            all_classes[feature_set.clas][1] += 1
+            all_classes[feature_set.clas][1] += 1  # add a tally to the amount of the class
 
-        for feature in all_features.keys():
-            if all_classes["2017"][1] != 0:
+        for feature in all_features.keys():  # Finalize the probabilities
+            if all_classes["2017"][1] != 0:  # To allow for n classes, divide by 0 errors have to covered
                 all_features[feature][0] /= all_classes["2017"][1]
             if all_classes["2018"][1] != 0:
                 all_features[feature][1] /= all_classes["2018"][1]
@@ -234,6 +184,6 @@ class IrClassifier:
 
         proportion_dict = {}
         for key in all_classes.keys():
-            proportion_dict[key] = all_classes[key][1]
+            proportion_dict[key] = all_classes[key][1]  # create the proportion dictionary
 
         return IrClassifier(all_features, proportion_dict)

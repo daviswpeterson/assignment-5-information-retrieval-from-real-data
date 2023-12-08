@@ -43,13 +43,11 @@ def main() -> None:
                     # all_videos.append(IrFeatureSet.ir_build(video, video["time"][:4]))
                     featureDict[video["time"][:4]].append(IrFeatureSet.ir_build(video, video["time"][:4]))
 
-            listOfYears = input("\nList each year you would like the classifier to be based on with a space between"
+            stringOfYears = input("\nList each year you would like the classifier to be based on with a space between"
                                 " each one (2017 2018 2019 2020 2021 2022 2023): ")
-
-            for year in listOfYears.split():
+            listOfYears = stringOfYears.split()
+            for year in listOfYears:
                 all_videos.extend(featureDict[year])
-
-            print("\nTraining a new classifier...")
 
             random.shuffle(all_videos)  # shuffle them
 
@@ -57,17 +55,13 @@ def main() -> None:
             train_ir_feature_sets = all_videos[:cutoff]  # 80% for training
             test_ir_feature_sets = all_videos[cutoff:]  # 20% for testing
 
+            print("\nCreating a classifier trained on the years ...")
+
             ir_classifier = IrClassifier.ir_train(train_ir_feature_sets)  # create our classifier
 
-            # i = 0
-            # while i < 10:  # change this to however many we want to see
-            #     # print(str(test_ir_feature_sets[i].feat))
-            #     print("Actual class: " + test_ir_feature_sets[i].clas + " | Predicted class: "
-            #           + ir_classifier.ir_gamma(test_ir_feature_sets[i]))
-            #     i += 1
-
             print("\nThe accuracy of your current classifier is " + str(accuracy(test_ir_feature_sets,
-                                                                    len(test_ir_feature_sets) - 1, ir_classifier)))
+                                                                                 len(test_ir_feature_sets) - 1,
+                                                                                 ir_classifier)))
 
             # ir_classifier.ir_present_features(5)
 
