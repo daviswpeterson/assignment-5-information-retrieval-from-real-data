@@ -1,11 +1,13 @@
 # Assignment 5: Information Retrieval from Real Data
-**Code Word:** 
+**Code Word:** mail 
+
+[Presentation](https://docs.google.com/presentation/d/1HI3rIAwKrN6DDd8U-l5POVTvbk9xyuIe2eTjArl_yNg/edit?usp=sharing)
 
 **Westmont College Fall 2023**
 
 **CS 128 Information Retrieval and Big Data**
 
-*Assistant Professor* Mike Ryu (mryu@westmont.edu) 
+*Assistant Professor* Mike Ryu (mryu@westmont.edu)
 
 ## Author Information
 * **Name**: Davis Peterson
