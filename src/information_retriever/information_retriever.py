@@ -87,8 +87,10 @@ class IrFeatureSet:
             return_set.add(IrFeature("Title contains " + word, True))  # Title keywords
         if source_object.get("subtitles", 0) != 0:
             return_set.add(IrFeature("Channel is " + source_object["subtitles"][0]["name"], True))  # Channel name
-        return_set.add(IrFeature("Month is " + source_object["time"][6:7], True))  # Month
-        return_set.add(IrFeature("Time is after 3pm", int(source_object["time"][12:13]) >= 15))  # Hour
+        # print(source_object["time"][5:7])
+        return_set.add(IrFeature("Month is " + source_object["time"][5:7], True))  # Month
+        # print(source_object["time"][11:13])
+        return_set.add(IrFeature("Time is after 3pm", int(source_object["time"][11:13]) >= 15))  # Hour
 
         return IrFeatureSet(return_set, known_clas)
 
@@ -107,6 +109,9 @@ class IrClassifier:
 
     def get_probability_dict(self) -> dict:
         return self.probability_dict
+
+    def get_proportion_dict(self) -> dict:
+        return self.proportion_dict
 
     def ir_gamma(self, a_feature_set: IrFeatureSet) -> str:
         """Given a single feature set representing an object to be classified, returns the most probable class

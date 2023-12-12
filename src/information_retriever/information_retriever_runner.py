@@ -7,11 +7,11 @@ import random
 from information_retriever import *
 import importlib.resources
 
-__author__ = "Connor Rogstad and Davis Peterson"
-__copyright__ = "Copyright 2023, Westmont College, Connor Rogstad and Davis Peterson"
-__credits__ = ["Connor Rogstad", "Davis Peterson"]
+__author__ = "Davis Peterson"
+__copyright__ = "Copyright 2023, Westmont College, Davis Peterson"
+__credits__ = ["Davis Peterson", "Connor Rogstad"]
 __license__ = "MIT"
-__email__ = ["crogstad@westmont.edu", "davpeterson@westmont.edu"]
+__email__ = ["davpeterson@westmont.edu", "crogstad@westmont.edu"]
 
 
 def main() -> None:
@@ -19,8 +19,9 @@ def main() -> None:
     exit_code = False
     retrain = True
     # access json
-    with importlib.resources.open_text("data", "davis-watch-history.json") as file:
+    with open("../../../davis-watch-history.json", "r") as file:
         data = json.load(file)
+    # davpeterson/assignment-5-information-retrieval-from-real-data/src/information_retriever
 
     while not exit_code:
 
