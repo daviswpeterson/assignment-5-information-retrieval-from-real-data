@@ -104,3 +104,10 @@ like now:
 - Allows users to quickly retrain classifiers to pick the best one
 
 **How to use:** Run the code and follow the prompts!
+
+### Using glcoud
+
+I initially wrote the code so that it would just run from PyCharm, but after pulling it on to gcloud, I found that it
+ran just about the same and process was easier than I thought. It took a little help from a student who did it before
+me and from Mike, but once I got it running it did what it needed to do. There's honestly not much else to say here
+because it does just about the same thing. It was cool to do though!

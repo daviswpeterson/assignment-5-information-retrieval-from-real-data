@@ -131,7 +131,7 @@ class IrClassifier:
 
         for feature in a_feature_set.feat:
             if self.probability_dict.get(feature, 0) != 0:  # if the feature is in the dictionary
-                gammaDict["2017"] *= self.probability_dict[feature][0]
+                gammaDict["2017"] *= self.probability_dict[feature][0]  # perform the  next gamma calculation on it
                 gammaDict["2018"] *= self.probability_dict[feature][1]
                 gammaDict["2019"] *= self.probability_dict[feature][2]
                 gammaDict["2020"] *= self.probability_dict[feature][3]
@@ -140,7 +140,7 @@ class IrClassifier:
                 gammaDict["2023"] *= self.probability_dict[feature][6]
 
         mostLikelyYear = max(gammaDict, key=gammaDict.get)
-        return mostLikelyYear + ", " + str(gammaDict[mostLikelyYear])
+        return mostLikelyYear + ", " + str(gammaDict[mostLikelyYear])  # year, gamma
 
     @classmethod
     def ir_train(cls, training_set: Iterable[IrFeatureSet]) -> IrClassifier:
@@ -173,7 +173,7 @@ class IrClassifier:
 
         for feature in all_features.keys():  # Finalize the probabilities
             if all_classes["2017"][1] != 0:  # To allow for n classes, divide by 0 errors have to covered
-                all_features[feature][0] /= all_classes["2017"][1]
+                all_features[feature][0] /= all_classes["2017"][1]  # then further calculate
             if all_classes["2018"][1] != 0:
                 all_features[feature][1] /= all_classes["2018"][1]
             if all_classes["2019"][1] != 0:
